@@ -1,0 +1,648 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+body{
+    height: 100vh;
+    max-width: 1700px;
+    max-height: 100vh;
+    background: radial-gradient(circle at center, #1e1e2e 20%, #11111a 80%);
+    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    line-height: 1.5;
+
+}
+
+/* ------------- drop down important -------------- */
+.open {
+    display: block !important;
+}
+.tool,
+.user-drop,
+.sets{
+    display: none;
+}
+
+/* -------------------back ground layers --------------- */
+.img-gr{
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.5;
+    z-index: -1;
+    
+}
+.img-l{
+    position: absolute;
+    top: 10%;
+    right: 60%;
+    
+}
+.layer{
+    position: absolute;
+    top: 20%;
+    right: 0;
+    box-shadow: 0 0 700px 15px white;
+    rotate: -30deg;
+    z-index: -1;
+}
+.lay-cen{
+    height: 1px;
+    width: 1px;
+    position: absolute;
+   top: 50%;
+   right: 50%;
+   
+   box-shadow: 0 0 700px 50px rgb(255, 255, 255);
+
+}
+.layer-l{
+    height: 0;
+    width: 30rem;
+    position: relative;
+    justify-content:start ;
+    align-items:start;
+}
+
+
+/* ------------ main css --------- */
+
+.main{
+    
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+
+/* ----------------left div------------ */
+.main .left{
+    width: 350px;
+    font-size: 18px;
+    margin-left: 10px;
+}
+.left .left-end{
+    width: 90%;
+}
+.logo {
+    width: 90%;
+    justify-content: space-between;
+    margin-left: 5px;
+    
+}
+.left .logo img{
+    width: 40px;
+    height: 50px;
+   display: flex;
+   margin-top: 2vh;
+   margin-left: 15px;    
+}
+.left .logo img:hover{
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(240, 240, 240, 1);
+}
+.left-end .logo .fom{
+    color: white;
+    font-size: 10px;
+    width: 90%;
+    margin-right:1px ;
+    display: flex;
+    
+}
+.left .set {
+    position: fixed;
+    bottom: 5vh; 
+    margin-left: 20px; 
+    z-index: 1000;
+}
+.left .set i{
+    display: flex;
+    margin-left: 15px;
+    margin-top: 8vh;
+    align-items: center; 
+    justify-self: center; 
+    justify-content: end;
+    font-size: 20px;
+    position: relative;
+    border: 1px solid gray;
+    padding: 15px;
+    color: gray;
+    border-radius: 50px;
+}
+.left .set i:hover{
+    color: #ffffff;
+    font-size: 22px;
+    transition:0.5s ;
+    cursor: pointer;
+    border-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(240, 240, 240, 0.2);
+}
+
+/* ---------------left drop------------------ */
+.sets{
+    width: 200px;
+    max-width: 190px;
+    background-color: transparent;
+    box-shadow: 0px 4px 6px rgba(240, 240, 240, 1);
+    align-items: center;
+    box-sizing: border-box;
+    margin-top: 54vh;
+    margin-left: 10px;
+    border-radius: 20px;
+    border: 1px solid wheat;  
+    transition: 0.5s;
+}
+.sets .set-list{
+    color: gray;
+    display: flex;
+    width: 200px;
+}
+.sets a{
+    display: flex;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 5px;
+}
+.sets i{
+    width: 40px;
+    background: transparent;
+    color: #525252;
+    border-radius: 50%;
+    padding: 8px;
+    margin-right:-40px;
+}
+.sets p{
+    width: 90%;
+    margin-right: -40px;
+}
+.sets span{
+    font-size: 15px;
+    padding-top: 10px;
+}
+.set-list:hover span{
+    transform: translateX(5px);
+}
+.set-list:hover i{
+    color: wheat;
+    background: transparent;
+    transition: 0.5s;
+}
+.set-list:hover p{
+    font-weight: 600;
+    color: wheat;
+    transition: 0.4s;
+    transform: translateZ(10px);
+}
+#light-dark{
+    width: 90%;
+    margin-left: 60px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+#light-dark:hover{
+    color: white;
+    cursor: pointer;
+    transition: 0.6s;
+}
+
+/* ---------- center div --------------- */
+.main.center{
+    width: 1000px;
+    height: 100%;
+    padding:  50px;
+    margin-left: 200px;
+}
+.chat-area{
+    width: 900px;
+    height: 75vh;
+    margin-left: 50px;
+    margin-top: 10px;
+}
+.hello-text {
+    position: absolute;
+    top: 44%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+.hello-text .usname{
+    color: darkgrey;
+    margin-left: 10px;
+}
+.hello-text samp{
+display: flex;
+position: relative;
+margin-left: 20%;
+}
+/* Hide text when moving */
+.hello-text.hidden {
+   display: none;
+   opacity: 0;
+}
+.hello-text .robot{
+    width: 75px;
+    height: 50px;
+    display: flex;
+    position: absolute;
+    margin-left:26%;
+    animation: robot-ani 1s linear infinite ;
+}
+@keyframes robot-ani {
+    0% { top: 2px;}
+    100% { top: -2px;}
+}
+
+.lk-group{
+    display: flex;
+    font-size: 15px;
+    position: relative;
+    top: 130px;
+    
+}
+.lk-group a {
+    text-decoration: none;
+    color: gray;
+    display: flex;
+    padding: 10px ;
+    border: 1px solid gray;
+    border-radius: 20px;
+    
+}
+.lk1,.lk2,.lk3{
+    margin-right: 20px;
+
+}
+
+.lk-group a i{
+    font-size: 18px;
+    padding: 3px;
+    margin-right: 3px;
+}
+
+/* ---------------question & answer  ---------------- */
+.result
+{
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    border: 1px solid black;
+    margin-top: 7vh;
+    overflow-y: auto;
+    position: relative;
+    flex-direction: column;
+    display: flex;
+    overflow: hidden; 
+}
+/* ---------------answer  style ---------------- */
+.result .resultres{
+    text-align: start;
+    padding: 20px;
+    position: relative;
+    
+}
+.resultres img {
+    width: 30px;
+    height: 30px;
+    display:flex;
+    position: absolute;
+    border-radius:50% ;
+}
+.resultres p{
+    margin-left: 40px;
+    border: 10px;
+}
+.resultres #typeEffect{
+    margin-left: 40px;
+}
+.resultres.move-up, .resultTitle.move-up {
+    transform: translateY(-150px); /* Move up */
+}
+
+
+
+/* ---------------question style ---------------- */
+.result .resultTitle{
+    text-align: end;
+    padding: 40px;
+    position: relative;
+}
+.resultTitle p{
+    margin-right: 20px;
+    color: gray;
+}
+.resultTitle img{
+    width: 30px;
+    height: 30px;
+    position: absolute;    
+    margin-top: -30px;
+    border-radius:50% ;
+    margin-right: 20px;
+    
+}
+
+
+.inarea {
+    position: absolute;
+    top: 55%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    transition: all 0.5s ease-in-out;
+}
+
+.inarea.moved {
+    position: fixed;
+    bottom: 0px;
+    left: 40%;
+    transform: translateX(-50%);
+    margin-top: 220px;
+   
+}
+
+.inarea{
+    width: 700px;
+    height: 12vh;
+    margin-left: 160px;
+    border: 1px solid white;
+    align-items: start;
+    border-radius: 20px;
+    margin-top: 10px; 
+}
+.inarea input{
+    width: 90%;
+    outline: none;
+    max-width: 90%;
+    border: none;
+    border-radius: 40px;
+    font-size: 18px;
+    text-overflow:scroll;
+    padding: 15px ;
+    justify-content: start;
+    max-height: 10vh;
+   background-color: transparent;
+    color: white; 
+}
+.inarea .icons_group{
+    width: 90%;
+    font-size: 20px;
+    justify-self: start;
+    align-items: start;
+    
+}
+.inarea .icons_group i{
+    justify-self: start;
+    align-items: start;
+    padding-left: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: lightgray;
+}
+.inarea .icons_group i:hover{
+    color: wheat;
+    transform: translateX(3px);
+    transition: 0.5s;
+
+
+}
+.icons_group .icon-left{
+    width: 100%;
+    display: flex;
+    padding-left:10px ;
+    padding-top: 15px;
+}
+.icon-left #paperclip{
+    text-decoration: none;
+}
+.icon-left #plane{
+    margin-left: 70%;
+}
+.morul{
+    margin-top: 16vh;
+    margin-left: 120px;
+    color:darkgray;
+    font-size: .8rem;
+    position: relative;
+}
+
+
+
+
+/* ---------------right div --------------- */
+
+.main .right{
+    width: 500px ;
+    height: 100%;
+    margin-top: 30px;
+}
+
+.right-end .profile img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    align-items: end;
+    justify-content: end;
+   margin-left: 40px;
+    display: flex;
+    
+
+}
+.right-end .profile img:hover{
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(240, 240, 240, 1);
+}
+.right-end .tools i{
+    font-size: 20px;
+    display: flex;
+    position: relative;
+    border: 1px solid gray;
+    padding: 15px;
+    color: gray;
+    margin-left:150px;
+    border-radius: 50px;
+}
+.right-end .tools i:hover{
+    color: #ffffff;
+    font-size: 22px;
+    transition:0.5s ;
+    cursor: pointer;
+    border-color: #ffffff;
+    box-shadow: 0px 4px 6px rgba(240, 240, 240, 0.2);
+}
+.right-end{
+    width: 300px;
+    display: flex;
+    position: absolute;
+    align-items: end;
+    justify-self: end;
+   
+}
+/* ---------- rignt drop down --------------- */
+
+/* ---------------tool drop---------------- */
+.drop-end{
+    display: flex;
+    margin-top :50%;
+    width: 100%;
+    max-width: 200px;
+    margin-top: 80px;
+    margin-left: 100px;
+    
+    
+}
+.tool {
+    max-width: 230px;
+    width: 100%;
+    position: absolute;
+    background-color: transparent;
+    box-shadow: 0px 4px 6px rgba(240, 240, 240, 1);
+    align-items: center;
+    box-sizing: border-box ;
+    border-radius: 20px;
+    border: 1px solid wheat;  
+}
+.tool .tool-list{
+    color: gray;
+    display: flex;
+}
+.tool a{
+    display: flex;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 5px;
+}
+.tool i{
+    width: 40px;
+    background: transparent;
+    color: #525252;
+    border-radius: 50%;
+    padding: 8px;
+    margin-right: 15px;
+    font-size: 18px;
+}
+.tool p{
+    width: 100%;
+    margin-left: -20px;
+   
+}
+.tool span{
+    font-size: 15px;
+    padding-top: 10px;
+}
+.tool-list:hover span{
+    transform: translateX(5px);
+}
+.tool-list:hover i{
+    color: wheat;
+    background: transparent;
+    transition: 0.5s;
+}
+.tool-list:hover p{
+    font-weight: 600;
+    color: wheat;
+    transition: 0.4s;
+    transform: translateZ(10px);
+}
+
+
+/* ----------------user drop ------------------ */
+
+.user-drop{
+    width: 100%;
+    max-width: 220px;
+    margin-left:110px;
+    background-color: transparent;
+    box-shadow: 0px 4px 6px rgb(166, 236, 231);
+    align-items: center;
+    box-sizing: border-box;
+    border-radius: 20px;
+    border: 1px solid wheat;
+    position: relative;
+
+}
+
+.user-drop .user-ld{
+    color: gray;
+  
+}
+.user-ld img{
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: flex;
+    position: relative;
+    margin-top: 10px;
+    margin-left: 10px;
+    align-items:center;
+    justify-content: center;
+}
+.user-ld h3{
+    font-weight: 500;
+    font-size: 20px;
+    margin-top: -30px;
+    margin-bottom: 15px;
+}
+.user-ld hr{
+    border: 0;
+    height: 1px;
+    width: 90%;
+    background: #ccc;
+    margin: 15px 0 10px;
+    margin-top: 10px;
+}
+.email p{
+    font-size: 15px;
+    display: flex;
+    left:15px;
+    position: relative;
+}
+.user-drop a{
+    display: flex;
+    text-decoration: none;
+    font-size:15px ;
+    padding: 5px;
+}
+.user-ld i{
+    width: 40px;
+    background: transparent;
+    color: #525252;
+    border-radius: 50%;
+    padding: 8px;
+    font-size:1.2rem;
+}
+.user-ld p{
+    width: 100%;
+    text-align: center;
+}
+.user-ld span{
+    font-size: 15px;
+    padding-top:10px ;
+}
+
+.user-ld:hover span{
+    transform: translateX(5px);
+}
+.user-ld:hover i{
+    color: wheat;
+    background: transparent;
+    transition: 0.5s;
+}
+.user-ld:hover p{
+    font-weight: 600;
+    color: wheat;
+    transition: 0.4s;
+    transform: translateZ(10px);
+}
+.user-drop.open-tool{
+    max-width: 90vh;
+}
+
