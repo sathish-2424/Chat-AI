@@ -5,7 +5,7 @@ const inarea = document.querySelector(".inarea input"),
 
 // Configuration object for API keys and settings
 const CONFIG = {
-    GEMINI_API_KEY: 'AIzaSyD8fCS0zoTMRUMocriHEE9I7VgpYAi4MRs', // Move to environment variables
+    GEMINI_API_KEY: 'Your API KEY', // Move to environment variables
     HUGGINGFACE_API_KEY: 'Your_HuggingFace_API_Key', // Move to environment variables
     MAX_CHAT_HISTORY: 50,
     TYPING_SPEED: 30, // Faster typing speed for better UX
