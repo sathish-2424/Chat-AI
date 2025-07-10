@@ -1,14 +1,14 @@
-const inarea = document.querySelector(".inarea input"),
-    send = document.querySelector(".bx-paper-plane"),
+// Fixed selectors to match your HTML
+const inarea = document.querySelector("#input-field"), // Changed from ".inarea input"
+    send = document.querySelector("#plane"), // Changed from ".bx-paper-plane"
     chat_area = document.querySelector(".chat-area"),
     result = document.querySelector(".result");
 
 // Configuration object for API keys and settings
 const CONFIG = {
-    GEMINI_API_KEY: 'AIzaSyD8fCS0zoTMRUMocriHEE9I7VgpYAi4MRs', // Move to environment variables
-    HUGGINGFACE_API_KEY: 'Your_HuggingFace_API_Key', // Move to environment variables
+    GEMINI_API_KEY: 'AIzaSyDBcpPgS2uEn3WC0DoaWtUH0ZJJ8tRRxYM', // Replace with your actual API key
     MAX_CHAT_HISTORY: 50,
-    TYPING_SPEED: 30, // Faster typing speed for better UX
+    TYPING_SPEED: 30,
     THEME: localStorage.getItem('chatTheme') || 'light'
 };
 
@@ -21,13 +21,12 @@ class ChatHistoryManager {
 
     addMessage(type, content, timestamp = new Date()) {
         this.history.push({
-            type, // 'user' or 'ai' or 'system'
+            type,
             content,
             timestamp,
             id: Date.now().toString()
         });
         
-        // Keep only recent messages
         if (this.history.length > this.maxHistory) {
             this.history = this.history.slice(-this.maxHistory);
         }
@@ -60,38 +59,14 @@ class ChatHistoryManager {
     }
 }
 
-// Enhanced Theme Manager
-class ThemeManager {
-    constructor() {
-        this.currentTheme = CONFIG.THEME;
-        this.applyTheme();
-    }
-
-    toggleTheme() {
-        this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-        this.applyTheme();
-        localStorage.setItem('chatTheme', this.currentTheme);
-    }
-
-    applyTheme() {
-        document.body.className = `theme-${this.currentTheme}`;
-        document.documentElement.style.setProperty('--primary-color', 
-            this.currentTheme === 'dark' ? '#2d3748' : '#ffffff');
-        document.documentElement.style.setProperty('--text-color', 
-            this.currentTheme === 'dark' ? '#ffffff' : '#333333');
-    }
-}
-
 // Enhanced typing effect
 class TypingEffect {
     static async typeText(element, text, speed = CONFIG.TYPING_SPEED) {
         element.innerHTML = '';
         
-        // Convert <br> tags to line breaks for typing, but keep HTML formatting
         const htmlText = text.replace(/<br>/g, '\n');
-        const textWithoutHtml = htmlText.replace(/<[^>]*>/g, ''); // Remove HTML tags for typing
+        const textWithoutHtml = htmlText.replace(/<[^>]*>/g, '');
         
-        // Type character by character
         for (let i = 0; i < textWithoutHtml.length; i++) {
             const char = textWithoutHtml.charAt(i);
             if (char === '\n') {
@@ -102,14 +77,13 @@ class TypingEffect {
             await new Promise(resolve => setTimeout(resolve, speed));
         }
         
-        // After typing is complete, replace with properly formatted HTML
         setTimeout(() => {
             element.innerHTML = text;
         }, 100);
     }
 }
 
-// Enhanced NL Module with more patterns and context awareness
+// Enhanced NL Module
 class NLModule {
     constructor() {
         this.questionPatterns = {
@@ -133,7 +107,6 @@ class NLModule {
     }
 
     recognizeQuestion(text) {
-        // Store context
         this.contextMemory.push(text);
         if (this.contextMemory.length > this.maxContextMemory) {
             this.contextMemory.shift();
@@ -166,7 +139,7 @@ class NLModule {
             let randomResponse = responses[questionType][Math.floor(Math.random() * responses[questionType].length)];
             this.displayResponse(randomResponse);
         } else if (questionType === "image") {
-            this.handleImageGeneration();
+            this.displayResponse("I can help you create images! Please describe what you'd like to see.");
         } else if (questionType === "math") {
             this.handleMathCalculation(originalQuestion);
         } else if (questionType === "weather") {
@@ -183,7 +156,7 @@ class NLModule {
         const responseDiv = document.createElement('div');
         responseDiv.className = 'resultres';
         responseDiv.innerHTML = `
-            
+            <img src="img/logo/ChatGPT Image Mar 29, 2025, 06_22_42 AM.png"/>
             <div class="response-text"></div>
         `;
         result.appendChild(responseDiv);
@@ -192,23 +165,21 @@ class NLModule {
         TypingEffect.typeText(textElement, responseText);
         smoothScrollToBottom();
         
-        // Add to history
         chatHistory.addMessage('ai', responseText);
-    }
-
-    handleImageGeneration() {
-        console.log("🔹 Image request detected. Calling crt()...");
-        crt();
-        this.displayResponse("Generating your image... ⏳");
     }
 
     handleMathCalculation(question) {
         try {
-            // Extract mathematical expression
-            const mathExpression = question.replace(/[^\d+\-*/().]/g, '');
-            if (mathExpression) {
-                const result = eval(mathExpression); // Note: Use math.js in production for safety
-                this.displayResponse(`The result is: ${result} 🔢`);
+            // Simple math evaluation (basic operations only)
+            const mathExpression = question.match(/[\d+\-*/().\s]+/g);
+            if (mathExpression && mathExpression.length > 0) {
+                const cleanExpression = mathExpression[0].replace(/[^\d+\-*/().]/g, '');
+                if (cleanExpression && /^[\d+\-*/().\s]+$/.test(cleanExpression)) {
+                    const result = Function('"use strict"; return (' + cleanExpression + ')')();
+                    this.displayResponse(`The result is: ${result} 🔢`);
+                } else {
+                    fetchGeminiResponse(question);
+                }
             } else {
                 fetchGeminiResponse(question);
             }
@@ -219,7 +190,6 @@ class NLModule {
     }
 
     async handleWeatherRequest(question) {
-        // Mock weather response - integrate with actual weather API
         const responses = [
             "I don't have access to real-time weather data, but I'd recommend checking a weather app! 🌤️",
             "For accurate weather information, please check your local weather service. ☀️"
@@ -264,101 +234,40 @@ class ErrorHandler {
     static displayError(message) {
         result.innerHTML += `
             <div class="resultres error">
-                <img src="img/error.png"/>
+                <img src="img/logo/ChatGPT Image Mar 29, 2025, 06_22_42 AM.png"/>
                 <p>${message}</p>
             </div>`;
         smoothScrollToBottom();
     }
 }
 
-// Enhanced offline support
-class OfflineManager {
-    constructor() {
-        this.isOnline = navigator.onLine;
-        this.setupEventListeners();
-        this.pendingRequests = [];
-    }
-
-    setupEventListeners() {
-        window.addEventListener('online', () => {
-            this.isOnline = true;
-            this.processPendingRequests();
-            this.showStatus('Back online! 🌐');
-        });
-
-        window.addEventListener('offline', () => {
-            this.isOnline = false;
-            this.showStatus('You are offline. Messages will be sent when connection is restored. 📴');
-        });
-    }
-
-    addPendingRequest(requestData) {
-        this.pendingRequests.push(requestData);
-    }
-
-    processPendingRequests() {
-        while (this.pendingRequests.length > 0) {
-            const request = this.pendingRequests.shift();
-            // Process pending request
-            fetchGeminiResponse(request.question);
-        }
-    }
-
-    showStatus(message) {
-        const statusDiv = document.createElement('div');
-        statusDiv.className = 'status-message';
-        statusDiv.textContent = message;
-        result.appendChild(statusDiv);
-        setTimeout(() => statusDiv.remove(), 3000);
-    }
-}
-
 // Initialize managers
 const chatHistory = new ChatHistoryManager();
-const themeManager = new ThemeManager();
 const nLModule = new NLModule();
-const offlineManager = new OfflineManager();
 
-// Enhanced event listeners
-inarea.addEventListener("keyup", (e) => {
-    send.style.display = e.target.value.trim().length > 0 ? "inline" : "none";
-    
-    // Save draft
-    localStorage.setItem('messageDraft', e.target.value);
-});
+// Check if elements exist before adding event listeners
+if (inarea) {
+    inarea.addEventListener("keyup", (e) => {
+        if (send) {
+            send.style.display = e.target.value.trim().length > 0 ? "inline" : "none";
+        }
+        localStorage.setItem('messageDraft', e.target.value);
+    });
 
-inarea.addEventListener("keydown", (e) => {
-    if (e.code === "Space") stopSpeechRecognition();
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        getGeminiResponse(e.target.value.trim());
-    }
-    
-    // Auto-complete suggestions (basic implementation)
-    if (e.key === "Tab" && e.target.value.length > 2) {
-        e.preventDefault();
-        showAutoComplete(e.target.value);
-    }
-});
+    inarea.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            getGeminiResponse(e.target.value.trim());
+        }
+    });
+}
 
-send.addEventListener("click", () => {
-    getGeminiResponse(inarea.value.trim());
-});
-
-// Auto-complete functionality
-function showAutoComplete(text) {
-    const suggestions = [
-        "How to", "What is", "Can you", "Please help", "Create an image of",
-        "Translate", "Calculate", "Explain", "Show me", "Tell me about"
-    ].filter(suggestion => 
-        suggestion.toLowerCase().startsWith(text.toLowerCase())
-    );
-
-    if (suggestions.length > 0) {
-        // Simple implementation - use the first suggestion
-        inarea.value = suggestions[0] + " ";
-        inarea.focus();
-    }
+if (send) {
+    send.addEventListener("click", () => {
+        if (inarea) {
+            getGeminiResponse(inarea.value.trim());
+        }
+    });
 }
 
 // Enhanced getGeminiResponse function
@@ -369,33 +278,34 @@ const getGeminiResponse = (question) => {
     chatHistory.addMessage('user', question);
 
     // Display user question
-    result.innerHTML += `
-        <div class="resultTitle">
-            <p>${question}</p>
-            <img src="img/logo/ChatGPT Image Mar 29, 2025, 06_22_42 AM.png"/>
-        </div>`;
-
-    inarea.value = "";
-    localStorage.removeItem('messageDraft'); // Clear saved draft
-    chat_area.style.display = "block";
-
-    // Check if offline
-    if (!offlineManager.isOnline) {
-        offlineManager.addPendingRequest({question, timestamp: new Date()});
+    if (result) {
         result.innerHTML += `
-            <div class="resultres offline">
+            <div class="resultTitle">
+                <p>${question}</p>
                 <img src="img/logo/ChatGPT Image Mar 29, 2025, 06_22_42 AM.png"/>
-                <p>Message saved. Will be sent when you're back online. 📴</p>
             </div>`;
-        return;
+    }
+
+    if (inarea) {
+        inarea.value = "";
+    }
+    localStorage.removeItem('messageDraft');
+    
+    if (chat_area) {
+        chat_area.style.display = "block";
     }
 
     const recognizedQuestion = nLModule.recognizeQuestion(question);
     nLModule.generateResponse(recognizedQuestion, question);
 };
 
-// Enhanced fetchGeminiResponse with retry logic
+// Enhanced fetchGeminiResponse with better error handling
 const fetchGeminiResponse = async (question, retryCount = 0) => {
+    if (!CONFIG.GEMINI_API_KEY || CONFIG.GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+        ErrorHandler.displayError("API key not configured. Please add your Gemini API key to the CONFIG object.");
+        return;
+    }
+
     const maxRetries = 3;
     const AIURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${CONFIG.GEMINI_API_KEY}`;
 
@@ -422,19 +332,19 @@ const fetchGeminiResponse = async (question, retryCount = 0) => {
         responseData = responseData.replace(/\*/g, '').replace(/\n/g, '<br>');
         responseData = formatResponseText(responseData);
 
-        // Add to history
         chatHistory.addMessage('ai', responseData);
 
-        // Create response element
         const responseDiv = document.createElement('div');
         responseDiv.className = 'resultres';
         responseDiv.innerHTML = `
-            
+            <img src="img/logo/ChatGPT Image Mar 29, 2025, 06_22_42 AM.png"/>
             <div class="response-text"></div>
         `;
-        result.appendChild(responseDiv);
+        
+        if (result) {
+            result.appendChild(responseDiv);
+        }
 
-        // Clean response data and apply typing animation
         const textElement = responseDiv.querySelector('.response-text');
         await TypingEffect.typeText(textElement, responseData);
         
@@ -452,69 +362,29 @@ const fetchGeminiResponse = async (question, retryCount = 0) => {
     }
 };
 
-// Response action functions (removed - buttons are hidden)
-
 // Enhanced smooth scroll
 const smoothScrollToBottom = () => {
-    const lastMessage = result.lastElementChild;
-    if (lastMessage) {
-        lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+    if (result) {
+        const lastMessage = result.lastElementChild;
+        if (lastMessage) {
+            lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+        }
     }
 };
 
 // Enhanced text formatting
 const formatResponseText = (text) => {
     return text
-        .split("\n") // Split by actual newlines instead of <br>
+        .split("\n")
         .map(line => {
-            // Bold text before colons
             line = line.replace(/^([\w\s]+):/, '<strong style="font-size: 18px;">$1</strong>:');
-            // Highlight code blocks
             line = line.replace(/`([^`]+)`/g, '<code style="background: #f0f0f0; padding: 2px 4px; border-radius: 3px;">$1</code>');
             return line;
         })
-        .join("<br>"); // Join with <br> for HTML display
+        .join("<br>");
 };
 
-// Enhanced image generation
-const crt = async () => {
-    const picture = document.getElementById("img");
-    if (picture) picture.style.display = "none";
-
-    const url = "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-3.5-large-turbo";
-    const headers = {
-        "Authorization": `Bearer ${CONFIG.HUGGINGFACE_API_KEY}`,
-        "Content-Type": "application/json"
-    };
-
-    const textInput = document.getElementById("text");
-    const body = {
-        "inputs": textInput ? textInput.value : "A beautiful landscape"
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(body)
-        });
-
-        if (response.ok) {
-            const currentbol = await response.blob();
-            const objectURL = URL.createObjectURL(currentbol);
-            if (picture) {
-                picture.src = objectURL;
-                picture.style.display = "block";
-            }
-        } else {
-            throw new Error(`Image generation failed: ${response.status}`);
-        }
-    } catch (error) {
-        ErrorHandler.handle(error, 'Image Generation');
-    }
-};
-
-// Enhanced speech recognition
+// Speech recognition setup
 let recognition;
 let isListening = false;
 
@@ -524,12 +394,14 @@ const initializeSpeechRecognition = () => {
         recognition.lang = 'en-US';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
-        recognition.continuous = true;
+        recognition.continuous = false;
 
         recognition.onresult = (event) => {
-            const question = event.results[event.results.length - 1][0].transcript;
-            inarea.value = question;
-            getGeminiResponse(question);
+            const question = event.results[0][0].transcript;
+            if (inarea) {
+                inarea.value = question;
+                getGeminiResponse(question);
+            }
         };
 
         recognition.onerror = (event) => {
@@ -539,9 +411,8 @@ const initializeSpeechRecognition = () => {
         };
 
         recognition.onend = () => {
-            if (isListening) {
-                recognition.start();
-            }
+            isListening = false;
+            updateMicrophoneButton();
         };
     }
 };
@@ -565,71 +436,50 @@ const stopSpeechRecognition = () => {
 const updateMicrophoneButton = () => {
     const microphone = document.getElementById("phone");
     if (microphone) {
-        microphone.style.color = isListening ? '#ff4444' : '#333';
+        microphone.style.color = isListening ? '#ff4444' : '#lightgray';
         microphone.title = isListening ? 'Stop listening' : 'Start voice input';
     }
 };
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-    // Ctrl/Cmd + Enter to send message
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
-        if (inarea.value.trim()) {
+        if (inarea && inarea.value.trim()) {
             getGeminiResponse(inarea.value.trim());
         }
     }
     
-    // Ctrl/Cmd + K to clear chat
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         clearChat();
     }
-    
-    // Ctrl/Cmd + D to toggle theme
-    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
-        e.preventDefault();
-        themeManager.toggleTheme();
-    }
 });
 
-// Additional utility functions
+// Utility functions
 function clearChat() {
     if (confirm('Are you sure you want to clear the chat history?')) {
-        result.innerHTML = '';
+        if (result) {
+            result.innerHTML = '';
+        }
         chatHistory.clearHistory();
     }
 }
 
-function exportChat() {
-    chatHistory.exportHistory();
-}
-
-function searchChat() {
-    const query = prompt('Enter search term:');
-    if (query) {
-        const results = chatHistory.searchHistory(query);
-        if (results.length > 0) {
-            console.log('Search results:', results);
-            // Display results in a modal or highlight in chat
-        } else {
-            alert('No results found.');
-        }
-    }
-}
-
-// Load draft message on page load
+// Initialize everything when page loads
 window.addEventListener('load', () => {
     initializeSpeechRecognition();
     
     const draft = localStorage.getItem('messageDraft');
-    if (draft) {
+    if (draft && inarea) {
         inarea.value = draft;
-        send.style.display = "inline";
+        if (send) {
+            send.style.display = "inline";
+        }
     }
 });
 
-// Event listeners for new features
+// Microphone event listener
 const microphone = document.getElementById("phone");
 if (microphone) {
     microphone.addEventListener("click", () => {
@@ -641,10 +491,12 @@ if (microphone) {
     });
 }
 
-const inputAreaEl = document.querySelector(".inarea input");
-if (inputAreaEl) {
-    inputAreaEl.addEventListener("click", () => {
+// Stop speech recognition when clicking input field
+if (inarea) {
+    inarea.addEventListener("click", () => {
         stopSpeechRecognition();
-        window.speechSynthesis.cancel();
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
     });
 }
